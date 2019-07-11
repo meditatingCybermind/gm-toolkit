@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import _ from 'lodash';
 import Roll from 'roll';
 import styled from '../../styled/theme';
-import { players, checks } from '../../data/static.js';
 
 const roller = new Roll();
 
@@ -16,7 +15,8 @@ const rollAll = players => {
 };
 
 
-const Roller = () => {
+const Roller = (props) => {
+    let {players, checks} = props
     const [results, setResults] = useState(rollAll(players));
     const [DC, setDC] = useState(0);
     const [currentSkill, setCurrentSkill] = useState(
