@@ -49,12 +49,14 @@ const PlayerManager = props => {
     };
 
     const upsertCharacter = player => {
-        if (
-            players.filter(p => {
-                return p.characterName === player.characterName;
-            })
-        ) {
-            
+        const index = players.findIndex((p) => {
+            return p.characterName === player.characterName;
+        })
+        console.log(index);
+        if (index >= 0) {
+            let updatedPlayers = [...players];
+            updatedPlayers[index] = player;
+            setPlayers(updatedPlayers); 
         } else {
             setPlayers([...players, player]);
         }
