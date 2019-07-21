@@ -44,7 +44,9 @@ const PlayerManager = props => {
     const editCharacter = event => {
         event.preventDefault();
         let player = currentPlayerObj;
+        console.log(editedChecks);
         player.checks = { ...player.checks, ...editedChecks };
+        console.log(player);
         upsertCharacter(player);
     };
 
@@ -70,6 +72,7 @@ const PlayerManager = props => {
     const editChecks = (value, check) => {
         let newChecks = { ...editedChecks };
         newChecks[check] = value;
+        console.log(check, newChecks);
         setEditedChecks(newChecks);
     };
 
@@ -131,7 +134,7 @@ const PlayerManager = props => {
                                         <td>
                                             <input
                                                 value={editedChecks[check]}
-                                                onChange={(event, check) =>
+                                                onChange={(event) =>
                                                     editChecks(
                                                         event.target.value,
                                                         check
