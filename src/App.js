@@ -7,8 +7,10 @@ import { players, checks } from './data/static.js';
 import PlayerManager from './comps/playerManager/playerManager';
 
 function App() {
+    let currentCampaign = {};
     const [campaignSelected, setCampaignSelected] = useState(false);
-    const [currentCampaign, setCurrentCampaign] = useState({});
+    const [players, setPlayers] = useState([])
+    const [checks, setChecks] = useState([])
 
     const uploadFile = event => {
         let file = event.target.files[0];
@@ -22,12 +24,27 @@ function App() {
     const readFile = (file) => {
         var reader = new FileReader();
         reader.onload = function(evt) {
-            setCurrentCampaign(JSON.parse(evt.target.result));
+            currentCampaign = JSON.parse(evt.target.result);
             setCampaignSelected(true);
+            initializeCampaign(currentCampaign);
         };
-        let raw = reader.readAsText(file);
+        reader.readAsText(file);
+    }
 
-        
+    const initializeCampaign = (campaign) => {
+        setPlayers(campaign.players);
+        setChecks(campaign.checks);
+    }
+    
+    const updatePlayers = (newPlayers) => {
+        setPlayers(newPlayers);
+        setTimeout(() => {
+            console.log('updatePlayers', players);
+        }, 900);
+    }
+
+    const logState = () => {
+        console.log(players, checks);
     }
 
     return (
@@ -41,10 +58,11 @@ function App() {
             </form>
             {campaignSelected && (
                 <>
-                    <Roller {...currentCampaign}/>
-                    <PlayerManager {...currentCampaign}/>
+                    <Roller players={players} checks={checks}/>
+                    <PlayerManager players={players} checks={checks} setPlayers={updatePlayers}/>
                 </>
             )}
+            <button onClick={logState}>test state</button>
         </div>
     );
 }

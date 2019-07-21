@@ -5,23 +5,24 @@ import styled from '../../styled/theme';
 
 const roller = new Roll();
 
-const rollAll = players => {
-    let ret = {};
-    players.map(player => {
-        ret[player.name] = roller.roll(`d20+${player.checks['perception']}`);
-    });
-
-    return ret;
-};
-
-
 const Roller = (props) => {
     let {players, checks} = props
-    const [results, setResults] = useState(rollAll(players));
+    const [results, setResults] = useState({});
+    const [haveRolledOnce, setFirstRoll] = useState(false);
     const [DC, setDC] = useState(0);
     const [currentSkill, setCurrentSkill] = useState(
         checks[Object.keys(checks)[0]]
     );
+
+    const rollAll = players => {
+        let ret = {};
+        if (players.length === 0) return;
+        players.map(player => {
+            ret[player.characterName] = roller.roll(`d20+${player.checks['perception']}`);
+        });
+        !haveRolledOnce && setFirstRoll(true)
+        return ret;
+    };
 
     const switchCheck = event => {
         setCurrentSkill(event.target.value);
@@ -53,7 +54,6 @@ const Roller = (props) => {
             <span>DC:</span>
             <input onChange={updateDC} value={DC}/>
             <button onClick={() => setResults(rollAll(players))}>roll</button>
-            
             <table>
                 <tbody>
                     <tr>
@@ -64,18 +64,23 @@ const Roller = (props) => {
                     </tr>
                     {players.map(player => {
                         return (
-                            <tr key={player.name}>
-                                <td>{player.name}</td>
+                            <tr key={player.characterName}>
+                                <td>{player.characterName}</td>
                                 <td>
                                     <input ></input>
                                 </td>
                                 <td>
-                                    {results[player.name].rolled} +{' '}
-                                    {player.checks[currentSkill]} ={' '}
-                                    {results[player.name].result}
+                                    {haveRolledOnce && (
+                                        <span>
+                                            {results[player.characterName].rolled} +{' '}
+                                            {player.checks[currentSkill]} ={' '}
+                                            {results[player.characterName].result}    
+                                        </span>
+                                    )}
+                                    
                                 </td>
                                 <td>
-                                    {getOutcome(results[player.name])}
+                                    {haveRolledOnce && getOutcome(results[player.characterName])}
                                 </td>
                             </tr>
                         );
